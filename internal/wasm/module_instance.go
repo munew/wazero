@@ -249,3 +249,21 @@ func (m *ModuleInstance) NumGlobal() int {
 func (m *ModuleInstance) Global(idx int) api.Global {
 	return constantGlobal{g: m.Globals[idx]}
 }
+
+func (m *ModuleInstance) ExportedTable(name string) api.Table {
+	exp, err := m.getExport(name, ExternTypeTable)
+	if err != nil {
+		return nil
+	}
+	return m.Tables[exp.Index]
+}
+
+func (m *ModuleInstance) ExportedTables() map[string]api.Table {
+	result := map[string]api.Table{}
+	for name, exp := range m.Exports {
+		if exp.Type == ExternTypeTable {
+			result[name] = m.Tables[exp.Index]
+		}
+	}
+	return result
+}

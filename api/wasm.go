@@ -165,6 +165,8 @@ type Module interface {
 	ExportedFunctionDefinitions() map[string]FunctionDefinition
 
 	// TODO: Table
+	ExportedTables() map[string]Table
+	ExportedTable(name string) Table
 
 	// ExportedMemory returns a memory exported from this module or nil if it wasn't.
 	//
@@ -499,6 +501,14 @@ func (f GoFunc) Call(ctx context.Context, stack []uint64) {
 	f(ctx, stack)
 }
 
+// TODO: comments
+type Reference = uintptr
+type Table interface {
+	Grow(delta uint32, initialRef Reference) (currentLen uint32)
+	Get(idx uint32) Reference
+	Set(idx uint32, ref Reference)
+}
+
 // Global is a WebAssembly 1.0 (20191205) global exported from an instantiated module (wazero.Runtime InstantiateModule).
 //
 // For example, if the value is not mutable, you can read it once:
@@ -587,6 +597,8 @@ type Memory interface {
 	//
 	// See MemorySizer Read and https://www.w3.org/TR/2019/REC-wasm-core-1-20191205/#grow-mem
 	Grow(deltaPages uint32) (previousPages uint32, ok bool)
+
+	GetBuffer() []byte
 
 	// ReadByte reads a single byte from the underlying buffer at the offset or returns false if out of range.
 	ReadByte(offset uint32) (byte, bool)

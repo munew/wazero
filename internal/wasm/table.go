@@ -341,3 +341,17 @@ func (t *TableInstance) Grow(delta uint32, initialRef Reference) (currentLen uin
 	}
 	return
 }
+
+func (t *TableInstance) Get(idx uint32) Reference {
+	if idx >= uint32(len(t.References)) {
+		return 0
+	}
+	return Reference(t.References[idx])
+}
+
+func (t *TableInstance) Set(idx uint32, ref Reference) {
+	if idx >= uint32(len(t.References)) {
+		return
+	}
+	t.References[idx] = uintptr(ref)
+}
