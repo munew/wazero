@@ -227,6 +227,10 @@ func MemoryPagesToBytesNum(pages uint32) (bytesNum uint64) {
 	return uint64(pages) << MemoryPageSizeInBits
 }
 
+func (m *MemoryInstance) GetBuffer() []byte {
+	return m.Buffer
+}
+
 // Grow implements the same method as documented on api.Memory.
 func (m *MemoryInstance) Grow(delta uint32) (result uint32, ok bool) {
 	if m.Shared {
